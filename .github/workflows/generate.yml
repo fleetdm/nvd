@@ -16,8 +16,13 @@ jobs:
           go-version: '^1.16.4'
       - name: generate cpe sqlite
         run: go mod download && go run -tags full,fts5 cmd/nvd/generate.go
+      - name: Set env
+        run: echo "ETAG=$(basename -- "*.sqlite")" >> $GITHUB_ENV
+      - name: Tag
+        run: git tag ${{ env.ETAG }}
       - name: release
         if: hashFiles('*.sqlite') != ''
         uses: softprops/action-gh-release@v1
         with:
-          files: "*.sqlite"
+          files: "${{ env.ETAG }}.sqlite"
+          tag_name: ${{ env.ETAG }}
