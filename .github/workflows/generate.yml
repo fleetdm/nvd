@@ -1,9 +1,17 @@
 on: push
 jobs:
-  wget:
+  cpe:
     runs-on: ubuntu-latest
     steps:
-      - name: wget
-        uses: wei/wget@v1
+      - name: checkout fleet
+        uses: actions/checkout@v2
         with:
-          args: -O dictionary.xml.gz https://nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.gz
+          repository: fleetdm/fleet
+          fetch-depth: 1
+          ref: issue-1435-software-to-cpe
+          token: ${{ github.token }}
+      - name: run generate
+        uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.4'
+        run: go mod download && go run cmd/generate.go
