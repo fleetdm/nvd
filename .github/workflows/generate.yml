@@ -1,0 +1,9 @@
+on: push
+jobs:
+  wget:
+    runs-on: ubuntu-latest
+    steps:
+      - name: wget
+        uses: wei/wget@v1
+        with:
+          args: -O dictionary.xml.gz https://nvd.nist.gov/feeds/xml/cpe/dictionary/official-cpe-dictionary_v2.3.xml.gz
