@@ -17,12 +17,15 @@ jobs:
       - name: generate cpe sqlite
         run: go mod download && go run -tags full,fts5 cmd/nvd/generate.go
       - name: Set env
+        if: hashFiles('*.sqlite.gz') != ''
         run: cat ./etagenv >> $GITHUB_ENV
       - name: Tag
+        if: hashFiles('*.sqlite.gz') != ''
         run: git tag ${{ env.ETAG }}
       - name: release
-        if: hashFiles('*.sqlite') != ''
+        if: hashFiles('*.sqlite.gz') != ''
         uses: softprops/action-gh-release@v1
         with:
-          files: "${{ env.ETAG }}.sqlite"
+          files: "*.sqlite.gz"
           tag_name: ${{ env.ETAG }}
+          token: ${{ secrets.GITHUB_TOKEN }}
