@@ -4,6 +4,10 @@ on:
       - master
   schedule:
       - cron: "0 0 * * *"
+
+permissions:
+  contents: write
+
 jobs:
   cpe:
     runs-on: ubuntu-latest
