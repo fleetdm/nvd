@@ -1,0 +1,31 @@
+name: Keepalive Workflow
+
+# If there haven't been any commits in the main/master branch in the last 60 days,
+# Github will disable the workflows in the repository with the following error:
+# 
+# "This scheduled workflow is disabled because there hasn't been activity in this repository
+# for at least 60 days. Enable this workflow to resume scheduled runs."
+
+on:
+  schedule:
+      - cron: '0 0 */15 * *' # run every fifteen days at midnight
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout NVD repo
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Keepalive commit
+        run: |
+          git config --global user.email ""
+          git config --global user.name "GitHub Actions Bot"
+          git commit --allow-empty -m 'Keepalive commit'
+          git push origin master
