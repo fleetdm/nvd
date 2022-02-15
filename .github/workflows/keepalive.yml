@@ -8,7 +8,7 @@ name: Keepalive Workflow
 
 on:
   schedule:
-      - cron: "0 0 */15 * *" # run every fifteen days at midnight
+      - cron: '0 0 */15 * *' # run every fifteen days at midnight
   workflow_dispatch:
 
 permissions:
