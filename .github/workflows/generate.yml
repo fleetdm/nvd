@@ -55,7 +55,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Slack Notification
-        # if: failure() # will uncomment once tested.
+        if: failure()
         uses: slackapi/slack-github-action@v1.18.0
         with:
           payload: |
