@@ -31,10 +31,10 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: '^1.17.3'
-          
+
       - name: Generate CPE database
         run: cd fleet && go mod download && go run -tags fts5 cmd/cpe/generate.go && cat ./etagenv >> $GITHUB_ENV
-        
+
       # Note that a new commit must be made for each release, otherwise GitHub does not order
       # the releases properly.
       - name: Tag
@@ -44,14 +44,14 @@ jobs:
           git config --global user.name "GitHub Actions Bot"
           git commit --allow-empty -m 'Release ${{ env.ETAG }}'
           git push origin release
-          git tag ${{ env.ETAG }}
-        
+
       - name: Release
         if: hashFiles('fleet/*.sqlite.gz') != ''
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
         with:
           files: "fleet/*.sqlite.gz"
           tag_name: ${{ env.ETAG }}
+          target_commitish: release
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Slack Notification
