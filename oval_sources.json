@@ -1,0 +1,8 @@
+{
+	"ubuntu-14": "https://security-metadata.canonical.com/oval/oci.com.ubuntu.trusty.usn.oval.xml.bz2",
+	"ubuntu-16": "https://security-metadata.canonical.com/oval/oci.com.ubuntu.xenial.usn.oval.xml.bz2",
+	"ubuntu-18":"https://security-metadata.canonical.com/oval/oci.com.ubuntu.bionic.usn.oval.xml.bz2",
+	"ubuntu-20": "https://security-metadata.canonical.com/oval/oci.com.ubuntu.focal.usn.oval.xml.bz2",
+	"ubuntu-21":"https://security-metadata.canonical.com/oval/oci.com.ubuntu.impish.usn.oval.xml.bz2",
+	"ubuntu-22": "https://security-metadata.canonical.com/oval/oci.com.ubuntu.jammy.usn.oval.xml.bz2"
+}
