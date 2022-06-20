@@ -11,5 +11,6 @@
 	"rhel_06": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL6.xml.bz2",
 	"rhel_07": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL7.xml.bz2",
 	"rhel_08": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL8.xml.bz2",
-	"rhel_09": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL9.xml.bz2"
+	"rhel_09": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL9.xml.bz2",
+	"amzn_02": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL7.xml.bz2"
 }
