@@ -37,7 +37,11 @@ jobs:
           cd fleet
           go mod download
           go run -tags fts5 cmd/cpe/generate.go
-          cat ./etagenv >> $GITHUB_ENV
+
+      - name: Current date
+        id: date
+        run: |
+          echo "::set-output name=date::$(date +'%Y%m%d%H%M')"
 
       # Note that a new commit must be made for each release, otherwise GitHub does not order
       # the releases properly.
@@ -45,7 +49,7 @@ jobs:
         run: |
           git config --global user.email ""
           git config --global user.name "GitHub Actions Bot"
-          git commit --allow-empty -m 'Release ${{ env.ETAG }}'
+          git commit --allow-empty -m 'Release ${{ steps.date.outputs.date }}'
           git push origin release
 
       - name: Release
@@ -54,7 +58,7 @@ jobs:
           files: |
             fleet/*.sqlite.gz
             fleet/server/vulnerabilities/cpe_translations.json
-          tag_name: ${{ env.ETAG }}
+          tag_name: ${{ steps.date.outputs.date }}
           target_commitish: release
           token: ${{ secrets.GITHUB_TOKEN }}
 
