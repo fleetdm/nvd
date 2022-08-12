@@ -23,7 +23,7 @@ jobs:
         with:
           repository: fleetdm/fleet
           fetch-depth: 1
-          ref: michal-6628-macos-vuln
+          ref: main
           token: ${{ github.token }}
           path: fleet
 
