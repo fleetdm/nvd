@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  cpe:
+  security_artifacts:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout NVD repo
@@ -32,11 +32,12 @@ jobs:
         with:
           go-version: '^1.17.3'
 
-      - name: Generate CPE database
+      - name: Generate security artifacts
         run: |
           cd fleet
           go mod download
           go run -tags fts5 cmd/cpe/generate.go
+          go run -tags fts5 cmd/msrc/generate.go
 
       - name: Current date
         id: date
@@ -58,6 +59,7 @@ jobs:
           files: |
             fleet/*.sqlite.gz
             fleet/server/vulnerabilities/cpe_translations.json
+            fleet/fleet_msrc_*.json
           tag_name: ${{ steps.date.outputs.date }}
           target_commitish: release
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -74,7 +76,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "NVD db generation result: ${{ job.status }}\nhttps://github.com/fleetdm/nvd/actions/runs/${{  github.run_id }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}"
+                    "text": "Security artifacts generation result: ${{ job.status }}\nhttps://github.com/fleetdm/nvd/actions/runs/${{  github.run_id }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}"
                   }
                 }
               ]
