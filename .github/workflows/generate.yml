@@ -59,7 +59,7 @@ jobs:
           files: |
             fleet/*.sqlite.gz
             fleet/server/vulnerabilities/cpe_translations.json
-            fleet/fleet_msrc_*.json
+            fleet/msrc_out/*.json
           tag_name: ${{ steps.date.outputs.date }}
           target_commitish: release
           token: ${{ secrets.GITHUB_TOKEN }}
