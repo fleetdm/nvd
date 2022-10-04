@@ -58,7 +58,7 @@ jobs:
         with:
           files: |
             fleet/*.sqlite.gz
-            fleet/server/vulnerabilities/cpe_translations.json
+            fleet/server/vulnerabilities/nvd/cpe_translations.json
             fleet/msrc_out/*.json
           tag_name: ${{ steps.date.outputs.date }}
           target_commitish: release
