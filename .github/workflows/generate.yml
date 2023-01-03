@@ -36,7 +36,7 @@ jobs:
         run: |
           cd fleet
           go mod download
-          export NETWORK_TEST_GITHUB_TOKEN={{ secrets.GITHUB_TOKEN }}
+          export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           go run -tags fts5 cmd/cpe/generate.go
           go run -tags fts5 cmd/msrc/generate.go
 
