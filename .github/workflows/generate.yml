@@ -39,6 +39,7 @@ jobs:
           export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           go run -tags fts5 cmd/cpe/generate.go
           go run -tags fts5 cmd/msrc/generate.go
+          go run -tags fts5 cmd/macoffice/generate.go
 
       - name: Current date
         id: date
@@ -61,6 +62,7 @@ jobs:
             fleet/*.sqlite.gz
             fleet/server/vulnerabilities/nvd/cpe_translations.json
             fleet/msrc_out/*.json
+            fleet/macoffice_rel_notes/*.json
           tag_name: ${{ steps.date.outputs.date }}
           target_commitish: release
           token: ${{ secrets.GITHUB_TOKEN }}
