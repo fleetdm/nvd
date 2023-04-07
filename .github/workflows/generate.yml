@@ -33,13 +33,18 @@ jobs:
           go-version: '^1.17.3'
 
       - name: Generate security artifacts
-        run: |
-          cd fleet
-          go mod download
-          export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          go run -tags fts5 cmd/cpe/generate.go
-          go run -tags fts5 cmd/msrc/generate.go
-          go run -tags fts5 cmd/macoffice/generate.go
+        uses: nick-fields/retry@943e742917ac94714d2f408a0e8320f2d1fcafcd # v2.8.3
+        with:
+          timeout_minutes: 15
+          max_attempts: 3
+          retry_wait_seconds: 120
+          command: |
+            cd fleet
+            go mod download
+            export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            go run -tags fts5 cmd/cpe/generate.go
+            go run -tags fts5 cmd/msrc/generate.go
+            go run -tags fts5 cmd/macoffice/generate.go
 
       - name: Current date
         id: date
