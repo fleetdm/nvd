@@ -6,6 +6,7 @@
 	"ubuntu_2104": "https://security-metadata.canonical.com/oval/com.ubuntu.hirsute.usn.oval.xml.bz2",
 	"ubuntu_2110": "https://security-metadata.canonical.com/oval/com.ubuntu.impish.usn.oval.xml.bz2",
 	"ubuntu_2204": "https://security-metadata.canonical.com/oval/com.ubuntu.jammy.usn.oval.xml.bz2",
+	"ubuntu_2304": "https://security-metadata.canonical.com/oval/com.ubuntu.lunar.usn.oval.xml.bz2",
 	"rhel_05": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL5.xml.bz2",
 	"rhel_06": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL6.xml.bz2",
 	"rhel_07": "https://www.redhat.com/security/data/oval/com.redhat.rhsa-RHEL7.xml.bz2",
