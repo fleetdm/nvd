@@ -2,7 +2,6 @@
 	"ubuntu_1404": "https://security-metadata.canonical.com/oval/com.ubuntu.trusty.usn.oval.xml.bz2",
 	"ubuntu_1604": "https://security-metadata.canonical.com/oval/com.ubuntu.xenial.usn.oval.xml.bz2",
 	"ubuntu_1804": "https://security-metadata.canonical.com/oval/com.ubuntu.bionic.usn.oval.xml.bz2",
-	"ubuntu_1910": "https://people.canonical.com/~ubuntu-security/oval/com.ubuntu.eoan.cve.oval.xml.bz2",
 	"ubuntu_2004": "https://security-metadata.canonical.com/oval/com.ubuntu.focal.usn.oval.xml.bz2",
 	"ubuntu_2104": "https://security-metadata.canonical.com/oval/com.ubuntu.hirsute.usn.oval.xml.bz2",
 	"ubuntu_2110": "https://security-metadata.canonical.com/oval/com.ubuntu.impish.usn.oval.xml.bz2",
