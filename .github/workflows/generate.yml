@@ -41,6 +41,7 @@ jobs:
           command: |
             cd fleet
             go mod download
+            export NVD_API_KEY=${{ secrets.NVD_API_KEY }}
             export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
             go run -tags fts5 cmd/cpe/generate.go
             go run -tags fts5 cmd/msrc/generate.go
