@@ -50,7 +50,7 @@ jobs:
       - name: Current date
         id: date
         run: |
-          echo "::set-output name=date::$(date +'%Y%m%d%H%M')"
+          echo "date=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
 
       # Note that a new commit must be made for each release, otherwise GitHub does not order
       # the releases properly.
