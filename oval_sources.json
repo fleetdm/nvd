@@ -6,7 +6,6 @@
 	"ubuntu_2104": "https://security-metadata.canonical.com/oval/com.ubuntu.hirsute.usn.oval.xml.bz2",
 	"ubuntu_2110": "https://security-metadata.canonical.com/oval/com.ubuntu.impish.usn.oval.xml.bz2",
 	"ubuntu_2204": "https://security-metadata.canonical.com/oval/com.ubuntu.jammy.usn.oval.xml.bz2",
-	"ubuntu_2210": "https://security-metadata.canonical.com/oval/com.ubuntu.kinetic.usn.oval.xml.bz2",
 	"ubuntu_2304": "https://security-metadata.canonical.com/oval/com.ubuntu.lunar.usn.oval.xml.bz2",
 	"ubuntu_2310": "https://security-metadata.canonical.com/oval/com.ubuntu.mantic.usn.oval.xml.bz2",
 	"ubuntu_2404": "https://security-metadata.canonical.com/oval/com.ubuntu.noble.usn.oval.xml.bz2",
