@@ -14,12 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout NVD repo
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        uses: actions/checkout@v2
         with:
           ref: release
 
       - name: Checkout Fleet
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
+        uses: actions/checkout@v2
         with:
           repository: fleetdm/fleet
           fetch-depth: 1
@@ -28,18 +28,24 @@ jobs:
           path: fleet
 
       - name: Setup Go
-        uses: actions/setup-go@0a12ed9d6a96ab950c8f026ed9f722fe0da7ef32 # v5.0.2
+        uses: actions/setup-go@v2
         with:
-          go-version-file: 'fleet/go.mod'
+          go-version: '^1.17.3'
 
       - name: Generate security artifacts
-        run: |
-          cd fleet
-          export NVD_API_KEY=${{ secrets.NVD_API_KEY }}
-          export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          go run -tags fts5 cmd/cpe/generate.go
-          go run cmd/msrc/generate.go
-          go run cmd/macoffice/generate.go
+        uses: nick-fields/retry@943e742917ac94714d2f408a0e8320f2d1fcafcd # v2.8.3
+        with:
+          timeout_minutes: 180
+          max_attempts: 3
+          retry_wait_seconds: 120
+          command: |
+            cd fleet
+            go mod download
+            export NVD_API_KEY=${{ secrets.NVD_API_KEY }}
+            export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            go run -tags fts5 cmd/cpe/generate.go
+            go run -tags fts5 cmd/msrc/generate.go
+            go run -tags fts5 cmd/macoffice/generate.go
 
       - name: Current date
         id: date
@@ -69,7 +75,7 @@ jobs:
 
       - name: Slack Notification
         if: failure()
-        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
+        uses: slackapi/slack-github-action@v1.18.0
         with:
           payload: |
             {
