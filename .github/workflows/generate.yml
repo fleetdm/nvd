@@ -23,7 +23,7 @@ jobs:
         with:
           repository: fleetdm/fleet
           fetch-depth: 1
-          ref: nvd-redirect
+          ref: main
           token: ${{ github.token }}
           path: fleet
 
@@ -35,7 +35,6 @@ jobs:
       - name: Generate security artifacts
         run: |
           cd fleet
-          export FLEET_NVD_BASE_URL_OVERRIDE=https://ff2cffbc7ae7.ngrok.app/
           export NVD_API_KEY=${{ secrets.NVD_API_KEY }}
           export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           go run -tags fts5 cmd/cpe/generate.go
