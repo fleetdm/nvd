@@ -51,49 +51,49 @@ jobs:
           cd fleet
           go run cmd/cpe/validate/main.go --db_dir ../cpe_files
 
-      - name: Current date
-        id: date
-        run: |
-          echo "date=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
+      # - name: Current date
+      #   id: date
+      #   run: |
+      #     echo "date=$(date +'%Y%m%d%H%M')" >> $GITHUB_OUTPUT
 
-      # Note that a new commit must be made for each release, otherwise GitHub does not order
-      # the releases properly.
-      - name: Tag
-        run: |
-          git config --global user.email ""
-          git config --global user.name "GitHub Actions Bot"
-          git commit --allow-empty -m 'Release ${{ steps.date.outputs.date }}'
-          git push origin release
+      # # Note that a new commit must be made for each release, otherwise GitHub does not order
+      # # the releases properly.
+      # - name: Tag
+      #   run: |
+      #     git config --global user.email ""
+      #     git config --global user.name "GitHub Actions Bot"
+      #     git commit --allow-empty -m 'Release ${{ steps.date.outputs.date }}'
+      #     git push origin release
 
-      - name: Release
-        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
-        with:
-          files: |
-            fleet/*.sqlite.gz
-            fleet/server/vulnerabilities/nvd/cpe_translations.json
-            fleet/msrc_out/*.json
-            fleet/macoffice_rel_notes/*.json
-          tag_name: ${{ steps.date.outputs.date }}
-          target_commitish: release
-          token: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Release
+      #   uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+      #   with:
+      #     files: |
+      #       fleet/*.sqlite.gz
+      #       fleet/server/vulnerabilities/nvd/cpe_translations.json
+      #       fleet/msrc_out/*.json
+      #       fleet/macoffice_rel_notes/*.json
+      #     tag_name: ${{ steps.date.outputs.date }}
+      #     target_commitish: release
+      #     token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Slack Notification
-        if: failure()
-        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
-        with:
-          payload: |
-            {
-              "text": "${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "<!subteam^S086VL144TU>, security artifacts generation result: ${{ job.status }}\nhttps://github.com/fleetdm/nvd/actions/runs/${{  github.run_id }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}"
-                  }
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_G_HELP_P1_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      # - name: Slack Notification
+      #   if: failure()
+      #   uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117 # v1.24.0
+      #   with:
+      #     payload: |
+      #       {
+      #         "text": "${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}",
+      #         "blocks": [
+      #           {
+      #             "type": "section",
+      #             "text": {
+      #               "type": "mrkdwn",
+      #               "text": "<!subteam^S086VL144TU>, security artifacts generation result: ${{ job.status }}\nhttps://github.com/fleetdm/nvd/actions/runs/${{  github.run_id }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}"
+      #             }
+      #           }
+      #         ]
+      #       }
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_G_HELP_P1_WEBHOOK_URL }}
+      #     SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
