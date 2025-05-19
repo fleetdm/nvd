@@ -23,7 +23,7 @@ jobs:
         with:
           repository: fleetdm/fleet
           fetch-depth: 1
-          ref: main
+          ref: 06a4c77560e2f29abb0c6da9f3603d0929a7531d # for testing, revert to main before merging
           token: ${{ github.token }}
           path: fleet
 
@@ -40,6 +40,16 @@ jobs:
           go run -tags fts5 cmd/cpe/generate.go
           go run cmd/msrc/generate.go
           go run cmd/macoffice/generate.go
+
+      - name: Validate NVD feeds
+        run: |
+          mkdir -p cpe_files
+          cp fleet/server/vulnerabilities/nvd/cpe_translations.json cpe_files/
+          cp fleet/*.sqlite.gz cpe_files/
+          cp fleet/msrc_out/*.json cpe_files/
+          cp fleet/macoffice_rel_notes/*.json cpe_files/
+          cd fleet
+          go run cmd/cpe/validate/main.go --db_dir ../cpe_files
 
       - name: Current date
         id: date
