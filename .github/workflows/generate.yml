@@ -41,6 +41,16 @@ jobs:
           go run cmd/msrc/generate.go
           go run cmd/macoffice/generate.go
 
+      - name: Validate NVD feeds
+        run: |
+          mkdir -p cpe_files
+          cp fleet/server/vulnerabilities/nvd/cpe_translations.json cpe_files/
+          cp fleet/*.sqlite.gz cpe_files/
+          cp fleet/msrc_out/*.json cpe_files/
+          cp fleet/macoffice_rel_notes/*.json cpe_files/
+          cd fleet
+          go run cmd/cpe/validate/main.go --db_dir ../cpe_files
+
       - name: Current date
         id: date
         run: |
