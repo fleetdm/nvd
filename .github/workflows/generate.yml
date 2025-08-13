@@ -5,9 +5,17 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch: # Manual
+    inputs:
+      clean:
+        description: 'Download fresh feeds from MSRC. Any value other than "false" will trigger a clean download'
+        required: true
+        default: 'false'
 
 permissions:
   contents: write
+
+env:
+  MSRC_CLEAN: ${{ github.event.inputs.clean || 'false' }}
 
 jobs:
   security_artifacts:
