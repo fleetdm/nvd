@@ -7,15 +7,16 @@ on:
   workflow_dispatch: # Manual
     inputs:
       clean:
-        description: 'Download fresh feeds from MSRC. Any value other than "false" will trigger a clean download'
+        description: 'Clean: download all feeds from MSRC from scratch.'
         required: true
-        default: 'false'
+        type: boolean
+        default: false
 
 permissions:
   contents: write
 
 env:
-  MSRC_CLEAN: ${{ github.event.inputs.clean || 'false' }}
+  MSRC_CLEAN: ${{ github.event.inputs.clean }}
 
 jobs:
   security_artifacts:
