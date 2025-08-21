@@ -5,9 +5,18 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch: # Manual
+    inputs:
+      clean:
+        description: 'Clean: download all feeds from MSRC from scratch.'
+        required: true
+        type: boolean
+        default: false
 
 permissions:
   contents: write
+
+env:
+  MSRC_CLEAN: ${{ github.event.inputs.clean }}
 
 jobs:
   security_artifacts:
