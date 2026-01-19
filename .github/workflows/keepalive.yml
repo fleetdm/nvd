@@ -2,13 +2,13 @@ name: Keepalive Workflow
 
 # If there haven't been any commits in the main/master branch in the last 60 days,
 # Github will disable the workflows in the repository with the following error:
-# 
+#
 # "This scheduled workflow is disabled because there hasn't been activity in this repository
 # for at least 60 days. Enable this workflow to resume scheduled runs."
 
 on:
   schedule:
-      - cron: '0 0 */15 * *' # run every fifteen days at midnight
+    - cron: "0 0 */15 * *" # run every fifteen days at midnight
   workflow_dispatch:
 
 permissions:
@@ -18,8 +18,13 @@ jobs:
   keepalive:
     runs-on: ubuntu-latest
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@20cf305ff2072d973412fa9b1e3a4f227bda3c76 # v2.14.0
+        with:
+          egress-policy: audit
+
       - name: Checkout NVD repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
           ref: master
 
