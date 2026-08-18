@@ -46,21 +46,55 @@ jobs:
         with:
           go-version-file: "fleet/go.mod"
 
-      - name: Generate security artifacts
+      # CPE generation is flaky (NVD API inconsistency, fleetdm/fleet#51430);
+      # it alone gets continue-on-error plus a reuse fallback below.
+      - name: Generate CPE database
+        id: gen_cpe
+        continue-on-error: true
+        working-directory: fleet
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: go run -tags fts5 cmd/cpe/generate.go
+
+      - name: Generate MSRC bulletins
+        working-directory: fleet
+        env:
+          NETWORK_TEST_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: go run cmd/msrc/generate.go
+
+      - name: Generate Mac Office release notes
+        working-directory: fleet
+        run: go run cmd/macoffice/generate.go
+
+      - name: Generate Windows Office bulletin
+        working-directory: fleet
+        run: go run cmd/winoffice/generate.go
+
+      - name: Reuse previous CPE database if generation failed
+        if: steps.gen_cpe.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          cd fleet
-          export NVD_API_KEY=${{ secrets.NVD_API_KEY }}
-          export NETWORK_TEST_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
-          go run -tags fts5 cmd/cpe/generate.go
-          go run cmd/msrc/generate.go
-          go run cmd/macoffice/generate.go
-          go run cmd/winoffice/generate.go
+          # The reused CPE DB is validated but NOT republished: Fleet scans the
+          # last 10 releases for it, and re-uploading an identical DB under a
+          # fresh created_at would make every server re-download it daily. The
+          # 5-release lookback bounds staleness within that scan window.
+          rm -f fleet/*.sqlite fleet/*.sqlite.gz
+          tag=$(gh api 'repos/fleetdm/nvd/releases?per_page=5' \
+            --jq '[.[] | select(any(.assets[]; .name | startswith("cpe-")))][0].tag_name')
+          if [ -z "$tag" ] || [ "$tag" = "null" ]; then
+            echo "::error::No CPE database found in the last 5 releases"
+            exit 1
+          fi
+          echo "Reusing the CPE database from release $tag for validation"
+          mkdir -p reused_cpe
+          gh release download "$tag" --repo fleetdm/nvd --pattern 'cpe-*.sqlite.gz' --dir reused_cpe
 
       - name: Validate NVD feeds
         run: |
           mkdir -p cpe_files
           cp fleet/server/vulnerabilities/nvd/cpe_translations.json cpe_files/
-          cp fleet/*.sqlite.gz cpe_files/
+          cp fleet/*.sqlite.gz cpe_files/ 2>/dev/null || cp reused_cpe/*.sqlite.gz cpe_files/
           cp fleet/msrc_out/*.json cpe_files/
           cp fleet/macoffice_rel_notes/*.json cpe_files/
           cp fleet/winoffice_out/*.json cpe_files/
@@ -82,6 +116,7 @@ jobs:
           git push origin release
 
       - name: Release
+        id: release
         uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
         with:
           files: |
@@ -93,6 +128,14 @@ jobs:
           tag_name: ${{ steps.date.outputs.date }}
           target_commitish: release
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Placed after Release so artifacts still ship, but the job goes red and
+      # Slack fires.
+      - name: Check generator outcomes
+        if: steps.gen_cpe.outcome == 'failure'
+        run: |
+          echo "::error::CPE generation failed (likely NVD ingestion lag); the release was published with the previous CPE database left in place"
+          exit 1
 
       - name: Slack Notification
         if: failure()
@@ -106,7 +149,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "<!subteam^S09HZCQL7DG>, security artifacts generation result: ${{ job.status }}\nhttps://github.com/fleetdm/nvd/actions/runs/${{  github.run_id }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}"
+                    "text": "<!subteam^S09HZCQL7DG>, security artifacts generation result: ${{ job.status }}\nCPE generator: ${{ steps.gen_cpe.outcome }}, Release: ${{ steps.release.outcome }}\nhttps://github.com/fleetdm/nvd/actions/runs/${{  github.run_id }}\n${{ github.event.pull_request.html_url || github.event.head.html_url }}"
                   }
                 }
               ]
