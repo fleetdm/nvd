@@ -5,6 +5,9 @@ name: Keepalive Workflow
 #
 # "This scheduled workflow is disabled because there hasn't been activity in this repository
 # for at least 60 days. Enable this workflow to resume scheduled runs."
+#
+# master is protected (changes must go through a pull request), so instead of pushing an
+# empty commit we re-enable every workflow via the API, which resets the inactivity timer.
 
 on:
   schedule:
@@ -12,7 +15,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  actions: write
 
 jobs:
   keepalive:
@@ -23,14 +26,11 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Checkout NVD repo
-        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-        with:
-          ref: master
-
-      - name: Keepalive commit
+      - name: Re-enable workflows
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          git config --global user.email ""
-          git config --global user.name "GitHub Actions Bot"
-          git commit --allow-empty -m 'Keepalive commit'
-          git push origin master
+          for id in $(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows" --paginate --jq '.workflows[] | select(.state != "disabled_manually") | .id'); do
+            echo "Enabling workflow ${id}"
+            gh api -X PUT "repos/${GITHUB_REPOSITORY}/actions/workflows/${id}/enable"
+          done
